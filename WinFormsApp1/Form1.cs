@@ -9,12 +9,14 @@ namespace WinFormsApp1
         public Form1(string User)
         {
             InitializeComponent();
+
+
             if (User.Contains("Sales"))
             {
                 OrdersRB.Enabled = true;
                 CustomersRB.Enabled = true;
             }
-            else if(User.Contains("HR"))
+            else if (User.Contains("HR"))
             {
                 EmployeeRB.Enabled = true;
 
@@ -35,6 +37,12 @@ namespace WinFormsApp1
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (!OrdersRB.Checked && !CustomersRB.Checked && !EmployeeRB.Checked)
+            {
+                MessageBox.Show("Please select a radio button option to proceed.");
+                return;
+            }
+
             DataTable dt = new DataTable();
             string connString = @"Data Source=DESKTOP-L263P3K\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
@@ -43,41 +51,42 @@ namespace WinFormsApp1
                 try
                 {
                     con.Open();
+                    SqlCommand com = null;
+
                     if (OrdersRB.Checked)
                     {
-                        using (var command = new SqlCommand("SELECT * FROM Orders", con))
-                        {
-                            using (var da = new SqlDataAdapter(command))
-                            {
-                                da.Fill(dt);
-                            }
-                        }
+                        com = new SqlCommand("SELECT * FROM Orders", con);
                     }
-                    if (CustomersRB.Checked)
+                    else if (CustomersRB.Checked)
                     {
-                        using (var command = new SqlCommand("SELECT * FROM Customers", con))
-                        {
-                            using (var da = new SqlDataAdapter(command))
-                            {
-                                da.Fill(dt);
-                            }
-                        }
+                        com = new SqlCommand("SELECT * FROM Customers", con);
                     }
-                    if (EmployeeRB.Checked)
+                    else if (EmployeeRB.Checked)
                     {
-                        using (var command = new SqlCommand("SELECT * FROM Employees", con))
+                        com = new SqlCommand("SELECT * FROM Employees", con);
+                    }
+                    else if (com != null)
+                    {
+                        using (var da = new SqlDataAdapter(com))
                         {
-                            using (var da = new SqlDataAdapter(command))
-                            {
-                                da.Fill(dt);
-                            }
+                            da.Fill(dt);
                         }
                     }
-
+                    else if (dt == null || dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show("No data available.");
+                        return;
+                    }
                 }
+
+                catch (SqlException sqlEx)
+                {
+                    MessageBox.Show("A database error occurred. Please try again later.");
+                }
+
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An error occurred: {ex.Message}");
+                    MessageBox.Show($"An error occurred: Please try again.");
                 }
             }
 
@@ -90,6 +99,12 @@ namespace WinFormsApp1
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if (!OrdersRB.Checked && !CustomersRB.Checked && !EmployeeRB.Checked)
+            {
+                MessageBox.Show("Please select a radio button option to proceed.");
+                return;
+            }
+
             DataTable dt = new DataTable();
             string connString = @"Data Source=DESKTOP-L263P3K\SQLEXPRESS;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
@@ -106,9 +121,10 @@ namespace WinFormsApp1
                         }
                     }
                 }
+
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An error occurred: {ex.Message}");
+                    MessageBox.Show($"An error occurred: Please try again");
                 }
             }
 
@@ -116,6 +132,16 @@ namespace WinFormsApp1
         }
 
         private void EmployeesChBx_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OrdersRB_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
         {
 
         }

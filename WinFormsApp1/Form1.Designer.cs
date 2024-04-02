@@ -119,6 +119,7 @@
             OrdersRB.TabStop = true;
             OrdersRB.Text = "Orders";
             OrdersRB.UseVisualStyleBackColor = true;
+            OrdersRB.CheckedChanged += OrdersRB_CheckedChanged;
             // 
             // Form1
             // 
@@ -134,6 +135,7 @@
             Controls.Add(button1);
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
